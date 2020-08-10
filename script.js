@@ -1,6 +1,3 @@
-/* This block of code shows how to format the HTML once you fetch some planetary JSON!
-
-*/
 window.addEventListener("load", function() {
    
    fetch("https://handlers.education.launchcode.org/static/planets.json").then(function(response) {
@@ -19,7 +16,7 @@ target.innerHTML =
             <img src="${json[3].image}">
             `;
    });
-   } );
+   });
 
    let form = document.getElementById("launchForm");
    let button = document.getElementById("formSubmit");
@@ -27,8 +24,9 @@ target.innerHTML =
    form.addEventListener("submit", function(event) {
       let pilot = document.querySelector("input[name=pilotName]");
       let copilot = document.querySelector("input[name=copilotName]");
-      let fuelLevelInput = document.querySelector("input[name=fuelLevel]");
       let cargoKg = document.querySelector("input[name=cargoMass]");
+      let fuelLevelInput = document.querySelector("input[name=fuelLevel]");
+
 
       //check if any field is empty
       if (pilot.value === "" || copilot.value === "" || fuelLevelInput.value === "" || cargoKg.value === "") {
@@ -52,20 +50,29 @@ target.innerHTML =
          let faultyItems = document.getElementById("faultyItems");
          let launchStatus = document.getElementById("launchStatus");
 
-      pilotStatus.innerHTML = `${pilot.value} is ready for launch`;
-      copilotStatus.innerHTML = `${copilot.value} is ready for launch`;
+ 
+         pilotStatus.innerHTML = `${pilot.value} is ready for launch`;
+         copilotStatus.innerHTML = `${copilot.value} is ready for launch`;
+         faultyItems.style.visibility = "visible"; 
 
-      if (Number(fuelLevelInput.value) < 10000) {
-         faultyItems.style.visibility = "visible";
-         fuelStatus.innerHTML = "Fuel level is too low for launch";
+
+      if (Number(cargoKg.value) > 10000 && Number(fuelLevelInput.value) > 10000) {
+         cargoStatus.innerHTML = "Too much mass for launch";
+         fuelStatus.innerHTML = "Fuel level high enough for launch";
          launchStatus.innerHTML = "Shuttle not ready for launch";
          launchStatus.style.color = "red";
-
       }
 
-      if (Number(cargoKg.value) > 10000) {
-         faultyItems.style.visibility = "visible"; 
+      else if (Number(fuelLevelInput.value) < 10000 && Number(cargoKg.value) > 10000) {
+         fuelStatus.innerHTML = "Fuel level is too low for launch";
          cargoStatus.innerHTML = "Too much mass for launch";
+         launchStatus.innerHTML = "Shuttle not ready for launch";
+         launchStatus.style.color = "red";
+      }
+
+      else if (Number(fuelLevelInput.value) < 10000 && Number(cargoKg.value) <= 10000) {
+         fuelStatus.innerHTML = "Fuel level is too low for launch";
+         cargoStatus.innerHTML = "Cargo mass low enough for launch";
          launchStatus.innerHTML = "Shuttle not ready for launch";
          launchStatus.style.color = "red";
       }
@@ -73,7 +80,10 @@ target.innerHTML =
       else {
          launchStatus.style.color = "green";
          launchStatus.innerHTML = "Shuttle is ready for launch";
+         cargoStatus.innerHTML = "Cargo mass low enough for launch";
+         fuelStatus.innerHTML = "Fuel level high enough for launch";
       }
+      
       }
    });
 });
